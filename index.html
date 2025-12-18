@@ -4,18 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ASU Polytechnic Housing Chatbot</title>
-    <!-- Base tag for GitHub Pages subdirectory support -->
-    <script>
-      const path = window.location.pathname;
-      const base = path.substring(0, path.lastIndexOf('/') + 1);
-      const baseTag = document.createElement('base');
-      baseTag.href = base;
-      document.head.appendChild(baseTag);
-    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-      // Robust shim for process.env
-      window.process = { env: { API_KEY: '' }, ...window.process };
+      // 1. Better Base Path Logic: Automatically handles the subdirectory on GitHub Pages
+      const isGitHubPages = window.location.hostname.includes('github.io');
+      if (isGitHubPages && !document.querySelector('base')) {
+        const base = document.createElement('base');
+        base.href = window.location.pathname.endsWith('/') 
+          ? window.location.pathname 
+          : window.location.pathname + '/';
+        document.head.appendChild(base);
+      }
+
+      // 2. Error Overlay: Helps diagnose why the screen is blank
+      window.onerror = function(msg, url, line, col, error) {
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = 'position:fixed;top:10px;left:10px;right:10px;background:white;color:red;padding:20px;z-index:99999;border:5px solid red;font-family:monospace;white-space:pre-wrap;overflow:auto;max-height:80vh;';
+        errorDiv.innerHTML = '<b>Application Error:</b><br>' + msg + '<br><br><b>Location:</b> ' + url + ' L:' + line + ' C:' + col + (error ? '<br><br><b>Stack:</b><br>' + error.stack : '');
+        document.body.appendChild(errorDiv);
+        return false;
+      };
+
+      // 3. Process Shim: Essential for libraries that expect a Node-like environment
+      window.process = window.process || { env: { API_KEY: '' } };
+      globalThis.process = window.process;
     </script>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
@@ -25,42 +37,42 @@
         margin: 0;
         overflow-x: hidden;
       }
-      /* Custom scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
+      #root {
+        min-height: 100vh;
+        width: 100%;
       }
-      ::-webkit-scrollbar-track {
-        background: #2B0000; 
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #FFC72C; 
-        border-radius: 4px;
-      }
+      /* Visible loading state if JS fails */
       #root:empty::before {
-        content: 'Loading Polydeskbot...';
-        position: absolute;
+        content: 'Initializing Deskbot...';
+        position: fixed;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        color: rgba(255, 199, 44, 0.5);
+        color: #FFC72C;
         font-size: 1.2rem;
         font-weight: 600;
+        text-align: center;
       }
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #2B0000; }
+      ::-webkit-scrollbar-thumb { background: #FFC72C; border-radius: 4px; }
     </style>
     <script type="importmap">
-    {
-      "imports": {
-        "react": "https://aistudiocdn.com/react@^19.2.1",
-        "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
-        "react/": "https://aistudiocdn.com/react@^19.2.1/",
-        "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
-        "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0"
-      }
-    }
-    </script>
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.1",
+    "react-dom": "https://aistudiocdn.com/react-dom@^19.2.1",
+    "react-dom/client": "https://aistudiocdn.com/react-dom@^19.2.1/client",
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+  }
+}
+</script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="index.tsx"></script>
+    <script type="module" src="./index.tsx"></script>
   </body>
 </html>

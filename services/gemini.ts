@@ -4,9 +4,11 @@ import { SYSTEM_INSTRUCTION } from '../constants.ts';
 let chatSession: Chat | null = null;
 
 export const initializeChat = (): void => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  const apiKey = (typeof process !== 'undefined' && process.env?.API_KEY) || '';
+  const ai = new GoogleGenAI({ apiKey });
+  
   chatSession = ai.chats.create({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3-flash-preview',
     config: {
       systemInstruction: SYSTEM_INSTRUCTION,
       temperature: 0.7,
