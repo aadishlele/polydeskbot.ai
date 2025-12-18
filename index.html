@@ -4,20 +4,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ASU Polytechnic Housing Chatbot</title>
+    <!-- Base tag for GitHub Pages subdirectory support -->
+    <script>
+      const path = window.location.pathname;
+      const base = path.substring(0, path.lastIndexOf('/') + 1);
+      const baseTag = document.createElement('base');
+      baseTag.href = base;
+      document.head.appendChild(baseTag);
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-      // Shim process.env for environments that don't provide it (like static GitHub Pages)
-      window.process = window.process || { env: { API_KEY: '' } };
+      // Robust shim for process.env
+      window.process = { env: { API_KEY: '' }, ...window.process };
     </script>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
       body {
         font-family: 'Inter', sans-serif;
         background-color: #2B0000;
-        cursor: none; /* Hide default cursor for custom implementation */
+        margin: 0;
         overflow-x: hidden;
       }
-      /* Hide scrollbar for clean UI but allow scrolling */
+      /* Custom scrollbar */
       ::-webkit-scrollbar {
         width: 8px;
       }
@@ -28,19 +36,29 @@
         background: #FFC72C; 
         border-radius: 4px;
       }
+      #root:empty::before {
+        content: 'Loading Polydeskbot...';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: rgba(255, 199, 44, 0.5);
+        font-size: 1.2rem;
+        font-weight: 600;
+      }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://aistudiocdn.com/react@^19.2.1",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
-    "react/": "https://aistudiocdn.com/react@^19.2.1/",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
-    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0"
-  }
-}
-</script>
-</head>
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://aistudiocdn.com/react@^19.2.1",
+        "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+        "react/": "https://aistudiocdn.com/react@^19.2.1/",
+        "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
+        "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0"
+      }
+    }
+    </script>
+  </head>
   <body>
     <div id="root"></div>
     <script type="module" src="index.tsx"></script>

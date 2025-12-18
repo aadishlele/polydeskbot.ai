@@ -1,5 +1,5 @@
 import React from 'react';
-import { COLORS } from '../constants';
+import { COLORS } from '../constants.ts';
 
 interface PortalProps {
   onMouseEnter: () => void;
