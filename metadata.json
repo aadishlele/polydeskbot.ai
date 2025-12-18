@@ -1,0 +1,5 @@
+{
+  "name": "ASU Poly Housing Chatbot",
+  "description": "A RAG-powered chatbot for Arizona State University Polytechnic Housing using Gemini 2.5 Flash.",
+  "requestFramePermissions": []
+}
