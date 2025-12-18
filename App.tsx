@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import DotGrid from './components/DotGrid';
-import CustomCursor from './components/CustomCursor';
-import Portal from './components/Portal';
-import ChatInterface from './components/ChatInterface';
-import { ViewState } from './types';
+import DotGrid from './components/DotGrid.tsx';
+import CustomCursor from './components/CustomCursor.tsx';
+import Portal from './components/Portal.tsx';
+import ChatInterface from './components/ChatInterface.tsx';
+import { ViewState } from './types.ts';
 
 const App: React.FC = () => {
   const [isHoveringCard, setIsHoveringCard] = useState(false);

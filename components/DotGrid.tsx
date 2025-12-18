@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Dot } from '../types';
+import { Dot } from '../types.ts';
 
 const DOT_SPACING = 30;
 const PROXIMITY_DISTANCE = 100;

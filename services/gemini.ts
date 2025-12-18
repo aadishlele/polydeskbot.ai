@@ -1,12 +1,10 @@
 import { GoogleGenAI, Chat, GenerateContentResponse } from "@google/genai";
-import { SYSTEM_INSTRUCTION } from '../constants';
-
-// Initialize the client
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+import { SYSTEM_INSTRUCTION } from '../constants.ts';
 
 let chatSession: Chat | null = null;
 
 export const initializeChat = (): void => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
   chatSession = ai.chats.create({
     model: 'gemini-2.5-flash',
     config: {

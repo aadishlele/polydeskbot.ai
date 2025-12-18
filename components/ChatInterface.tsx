@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChatMessage } from '../types';
-import { sendMessageToGemini } from '../services/gemini';
+import { ChatMessage } from '../types.ts';
+import { sendMessageToGemini } from '../services/gemini.ts';
 
 // SVG Components
 const IconSend = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>;
@@ -42,12 +42,8 @@ const FormattedMessage: React.FC<{ text: string; role: 'user' | 'model' }> = ({ 
     const headerRow = parseRow(tableRows[0]);
     
     // Filter out separator lines (e.g. "---", ":---")
-    // Also ensuring we don't accidentally filter data rows that might look like separators to a weak regex
     const bodyRows = tableRows.slice(1).filter(row => {
-        // Strip pipes and whitespace
         const stripped = row.replace(/[\|\s]/g, '');
-        // A separator row typically only contains dashes and colons
-        // Using a check to see if it contains alphanumeric characters - if so, it's data
         const hasData = /[a-zA-Z0-9$]/.test(stripped);
         return hasData;
     }).map(parseRow);
@@ -97,35 +93,29 @@ const FormattedMessage: React.FC<{ text: string; role: 'user' | 'model' }> = ({ 
     const line = lines[i];
     const trimmed = line.trim();
 
-    // 1. Detect Table Rows (must start with |)
     if (trimmed.startsWith('|')) {
-      flushList(`list-${i}`); // Close any open list
+      flushList(`list-${i}`);
       tableRows.push(trimmed);
       continue; 
     } 
     
-    // Check if we are inside a table block but hit an empty line
-    // If the NEXT line is a table row, ignore this empty line (don't break the table)
     if (tableRows.length > 0 && trimmed === '') {
         const nextLine = lines[i+1]?.trim();
         if (nextLine && nextLine.startsWith('|')) {
-            continue; // Skip the empty line, keep accumulating table
+            continue;
         }
     }
 
-    // If we reach here, the table block is definitely over
     flushTable(`table-${i}`);
 
-    // 2. Detect Bullet Lists (- item or * item)
     if (trimmed.startsWith('- ') || trimmed.startsWith('* ') || trimmed.startsWith('• ')) {
       const content = trimmed.substring(2);
       listItems.push(<li key={`li-${i}`}>{parseBold(content)}</li>);
       continue;
     } else {
-      flushList(`list-${i}`); // Close any open list
+      flushList(`list-${i}`);
     }
 
-    // 3. Detect Headers (### Header)
     if (trimmed.startsWith('###')) {
       elements.push(
         <h3 key={`h3-${i}`} className="text-lg font-bold mt-4 mb-2">
@@ -135,7 +125,6 @@ const FormattedMessage: React.FC<{ text: string; role: 'user' | 'model' }> = ({ 
       continue;
     }
 
-    // 4. Standard Paragraph
     if (trimmed.length > 0) {
       elements.push(
         <p key={`p-${i}`} className="leading-relaxed min-h-[1.2em]">
@@ -145,7 +134,6 @@ const FormattedMessage: React.FC<{ text: string; role: 'user' | 'model' }> = ({ 
     }
   }
 
-  // Flush remainders
   flushTable('end');
   flushList('end');
 
@@ -188,7 +176,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ onMouseEnter, onMouseLeav
     setInput('');
     setIsTyping(true);
 
-    // Placeholder for AI response
     const botMessageId = (Date.now() + 1).toString();
     setMessages(prev => [...prev, { id: botMessageId, role: 'model', text: '', isLoading: true }]);
 
@@ -212,12 +199,11 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ onMouseEnter, onMouseLeav
     <div 
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      data-cursor="maroon" // Elements inside have white bg -> maroon cursor
+      data-cursor="maroon"
       className="w-full h-[90vh] md:h-[85vh] max-w-[1200px] bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col border border-gray-200"
     >
-      {/* Header */}
       <div 
-        data-cursor="yellow" // Header is maroon -> yellow cursor
+        data-cursor="yellow"
         className="bg-[#2B0000] p-4 flex items-center justify-between shrink-0"
       >
         <div className="flex items-center gap-3">
@@ -244,10 +230,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ onMouseEnter, onMouseLeav
         </div>
       </div>
 
-      {/* Messages Area */}
-      <div 
-         className="flex-1 overflow-y-auto p-4 md:p-6 bg-gray-50 scroll-smooth"
-      >
+      <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-gray-50 scroll-smooth">
         <div className="max-w-3xl mx-auto space-y-6">
             {messages.map((msg) => (
             <div
@@ -270,7 +253,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ onMouseEnter, onMouseLeav
                     : 'bg-white text-gray-800 border border-gray-100 rounded-tl-none'
                 }`}
                 >
-                  {/* Use the new FormattedMessage component */}
                   {msg.isLoading && !msg.text ? (
                       <span className="animate-pulse">Thinking...</span>
                   ) : (
@@ -283,7 +265,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ onMouseEnter, onMouseLeav
         </div>
       </div>
 
-      {/* Input Area */}
       <div className="bg-white p-4 border-t border-gray-100 shrink-0">
         <form onSubmit={handleSend} className="max-w-3xl mx-auto relative flex items-center gap-2">
           <input

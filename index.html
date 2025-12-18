@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ASU Polytechnic Housing Chatbot</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Shim process.env for environments that don't provide it (like static GitHub Pages)
+      window.process = window.process || { env: { API_KEY: '' } };
+    </script>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
       body {
